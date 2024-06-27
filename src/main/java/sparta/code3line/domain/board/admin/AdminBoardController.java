@@ -93,4 +93,5 @@ public class AdminBoardController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
+
 }
