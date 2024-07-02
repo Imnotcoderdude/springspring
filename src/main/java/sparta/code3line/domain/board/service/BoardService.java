@@ -20,10 +20,12 @@ import sparta.code3line.domain.follow.entity.Follow;
 import sparta.code3line.domain.follow.repository.FollowRepository;
 import sparta.code3line.domain.like.repository.LikeBoardRepository;
 import sparta.code3line.domain.user.entity.User;
+import sparta.code3line.security.UserPrincipal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j(topic = "BoardService")
 @Service
@@ -173,9 +175,29 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(()
                 -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        Long likeCount = likeBoardRepository.countByBoardId(board.getId());
-        return new BoardResponseDto(board,likeCount);
+        Long boardLikeCount = likeBoardRepository.countByBoardId(board.getId());
+        return new BoardResponseDto(board, boardLikeCount);
 
+    }
+
+    // 조회 : 좋아요한 모든 게시글 조회
+    public Page<BoardResponseDto> getAllLikeBoard(int page, int size, UserPrincipal userPrincipal) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Long userId = userPrincipal.getUser().getId();
+
+        List<Long> likeBoardIds = likeBoardRepository.findByBoardIdsByUserId(userId);
+
+        Page<Board> likeBoards = boardRepository.findByIdIn(likeBoardIds, pageable);
+
+        List<BoardResponseDto> boardResponseDtoList = likeBoards.getContent().stream()
+                .map(board -> {
+                    Long likeCount = likeBoardRepository.countByBoardId(board.getId());
+                    return new BoardResponseDto(board, likeCount);
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(boardResponseDtoList, pageable, likeBoards.getTotalElements());
     }
 
     // 게시글 수정

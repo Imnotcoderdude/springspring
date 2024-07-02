@@ -14,7 +14,7 @@ public class BoardResponseDto {
     private String contents;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private Long likeCount;
+    private Long boardLikeCount;
 
     public BoardResponseDto(Board board) {
 
@@ -27,7 +27,7 @@ public class BoardResponseDto {
 
     }
 
-    public BoardResponseDto(Board board, Long likeCount) {
+    public BoardResponseDto(Board board, Long boardLikeCount) {
 
         this.nickname = board.getUser().getNickname();
         this.boardId = board.getId();
@@ -35,7 +35,7 @@ public class BoardResponseDto {
         this.contents = board.getContents();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
-        this.likeCount = likeCount;
+        this.boardLikeCount = boardLikeCount;
 
     }
 

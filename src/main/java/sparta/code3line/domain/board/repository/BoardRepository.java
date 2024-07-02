@@ -23,4 +23,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findByType(Board.BoardType type);
 
+    Page<Board> findByIdIn(List<Long> likeBoardIds, Pageable pageable);
+
 }

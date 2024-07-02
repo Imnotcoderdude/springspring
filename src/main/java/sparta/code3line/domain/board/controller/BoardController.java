@@ -111,6 +111,28 @@ public class BoardController {
 
     }
 
+    // 조회 : 좋아요 한 모든 게시글
+    @GetMapping("/boards/like")
+    public ResponseEntity<CommonResponse<Page<BoardResponseDto>>> getAllLikeBoard(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam(defaultValue = "1") int page
+    ) {
+
+        int sizeFixed = 5;
+        Page<BoardResponseDto> responseDto = boardService.getAllLikeBoard(
+                page - 1,
+                sizeFixed,
+                userPrincipal);
+        CommonResponse<Page<BoardResponseDto>> commonResponse = new CommonResponse<>(
+                "좋아요한 게시글 " + page + "번 페이지 조회 완료",
+                HttpStatus.OK.value(),
+                responseDto
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
+
+    }
+
     // 게시글 수정
     @PutMapping("/boards/{boardId}")
     public ResponseEntity<CommonResponse<BoardResponseDto>> updateBoard(
