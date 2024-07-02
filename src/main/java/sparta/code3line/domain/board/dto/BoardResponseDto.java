@@ -14,6 +14,7 @@ public class BoardResponseDto {
     private String contents;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private Long like;
 
     public BoardResponseDto(Board board) {
 

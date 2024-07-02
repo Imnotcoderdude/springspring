@@ -26,11 +26,10 @@ public class BoardController {
     // 게시글 생성
     @PostMapping("/boards")
     public ResponseEntity<CommonResponse<BoardResponseDto>> addBoard(
-            @RequestPart(value = "board") BoardRequestDto requestDto,
-            @RequestPart(value = "file") List<MultipartFile> fileList,
+            @RequestBody BoardRequestDto requestDto,
             @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        BoardResponseDto responseDto = boardService.addBoard(userPrincipal.getUser(), requestDto, fileList);
+        BoardResponseDto responseDto = boardService.addBoard(userPrincipal.getUser(), requestDto);
         CommonResponse<BoardResponseDto> commonResponse = new CommonResponse<>(
                 "게시글 등록 성공",
                 HttpStatus.CREATED.value(),

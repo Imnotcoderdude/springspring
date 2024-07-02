@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 import sparta.code3line.common.CommonResponse;
+import sparta.code3line.domain.like.dto.LikeCountResponseDto;
 import sparta.code3line.domain.like.dto.LikeResponseDto;
 import sparta.code3line.domain.like.service.LikeService;
 import sparta.code3line.security.UserPrincipal;
@@ -74,4 +72,15 @@ public class LikeController {
 
     }
 
+    @GetMapping("/boards/{id}/likes/count")
+    public ResponseEntity<CommonResponse<LikeCountResponseDto>> getLikeCount(
+            @PathVariable Long id) {
+
+        LikeCountResponseDto responseDto = likeService.getLikeCountBoard(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse<>(
+                "좋아요 개수 조회 성공 🎉",
+                HttpStatus.OK.value(),
+                responseDto));
+    }
 }

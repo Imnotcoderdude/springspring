@@ -10,9 +10,7 @@ import sparta.code3line.common.CommonResponse;
 import sparta.code3line.domain.board.dto.BoardRequestDto;
 import sparta.code3line.domain.board.dto.BoardResponseDto;
 import sparta.code3line.domain.board.dto.BoardUpdateRequestDto;
-import sparta.code3line.domain.board.entity.Board;
 import sparta.code3line.domain.user.entity.User;
-import sparta.code3line.domain.user.service.UserService;
 import sparta.code3line.security.UserPrincipal;
 
 @RestController
@@ -20,7 +18,6 @@ import sparta.code3line.security.UserPrincipal;
 public class AdminBoardController {
 
     private final AdminBoardService adminBoardService;
-    private final UserService userService;
 
     // ADMIN : 공지 게시물 생성
     @PostMapping("/admin/boards")

@@ -9,4 +9,6 @@ public interface LikeBoardRepository extends CrudRepository<LikeBoard, Long> {
 
     Optional<LikeBoard> findByUserIdAndBoardId(Long userId, Long commentId);
 
+    Long countByBoardId(Long boardId);
+
 }

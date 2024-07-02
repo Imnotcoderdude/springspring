@@ -8,6 +8,7 @@ import sparta.code3line.domain.board.entity.Board;
 import sparta.code3line.domain.board.repository.BoardRepository;
 import sparta.code3line.domain.comment.entity.Comment;
 import sparta.code3line.domain.comment.repository.CommentRepository;
+import sparta.code3line.domain.like.dto.LikeCountResponseDto;
 import sparta.code3line.domain.like.dto.LikeResponseDto;
 import sparta.code3line.domain.like.entity.LikeBoard;
 import sparta.code3line.domain.like.entity.LikeComment;
@@ -102,5 +103,11 @@ public class LikeService {
         likeCommentRepository.delete(likeComment);
         return new LikeResponseDto(likeComment);
 
+    }
+
+    // 좋아요 카운트
+    public LikeCountResponseDto getLikeCountBoard(Long boardId) {
+        Long likeCount = likeBoardRepository.countByBoardId(boardId);
+        return new LikeCountResponseDto(boardId, likeCount);
     }
 }

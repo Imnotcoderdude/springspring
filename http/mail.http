@@ -4,7 +4,7 @@ POST http://localhost:8080/users/email
 Content-Type: application/json
 
 {
-  "email": "dlskdud123@gmail.com"
+  "email": "topsolo77@gmail.com"
 }
 
 ### 인증 메일 전송
