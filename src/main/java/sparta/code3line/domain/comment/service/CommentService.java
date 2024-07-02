@@ -11,6 +11,8 @@ import sparta.code3line.domain.comment.dto.CommentRequestDto;
 import sparta.code3line.domain.comment.dto.CommentResponseDto;
 import sparta.code3line.domain.comment.entity.Comment;
 import sparta.code3line.domain.comment.repository.CommentRepository;
+import sparta.code3line.domain.like.repository.LikeBoardRepository;
+import sparta.code3line.domain.like.repository.LikeCommentRepository;
 import sparta.code3line.domain.user.entity.User;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
+    private final LikeCommentRepository likeCommentRepository;
 
     public CommentResponseDto createComment(Long boardId, User user, CommentRequestDto requestDto) {
 
@@ -74,6 +77,20 @@ public class CommentService {
 
         commentRepository.delete(comment);
 
+    }
+
+    // 댓글 단건 조회
+    public CommentResponseDto getOneComment(Long boardId, Long commentId) {
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getBoard().getId().equals(boardId)) {
+            throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
+        }
+
+        Long commentLikeCount = likeCommentRepository.countByCommentId(comment.getId());
+        return new CommentResponseDto(comment, commentLikeCount);
     }
 
     // comment 찾아오기

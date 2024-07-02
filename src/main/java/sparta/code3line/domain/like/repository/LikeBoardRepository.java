@@ -23,5 +23,4 @@ public interface LikeBoardRepository extends CrudRepository<LikeBoard, Long> {
     // UserId에 해당하는 사용자가 남긴 좋아요가 달려있는 모든 게시글을 추적한다.
     @Query("SELECT lb.board.id FROM LikeBoard lb WHERE lb.user.id = :userId")
     List<Long> findByBoardIdsByUserId(@Param("userId") Long boardId);
-
 }
