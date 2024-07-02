@@ -18,6 +18,7 @@ import sparta.code3line.domain.board.repository.BoardRepository;
 import sparta.code3line.domain.file.FileService;
 import sparta.code3line.domain.follow.entity.Follow;
 import sparta.code3line.domain.follow.repository.FollowRepository;
+import sparta.code3line.domain.like.repository.LikeBoardRepository;
 import sparta.code3line.domain.user.entity.User;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class BoardService {
     private final FollowRepository followRepository;
     private final FileService fileService;
     private final BoardFilesRepository boardFilesRepository;
+    private final LikeBoardRepository likeBoardRepository;
 
     // USER에 해당하는 게시글 찾아오기
     public Board getBoard(User user, Long boardId) {
@@ -171,7 +173,8 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(()
                 -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        return new BoardResponseDto(board);
+        Long likeCount = likeBoardRepository.countByBoardId(board.getId());
+        return new BoardResponseDto(board,likeCount);
 
     }
 
