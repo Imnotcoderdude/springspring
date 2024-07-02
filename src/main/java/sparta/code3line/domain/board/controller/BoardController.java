@@ -112,7 +112,7 @@ public class BoardController {
     }
 
     // 조회 : 좋아요 한 모든 게시글
-    @GetMapping("/boards/like")
+    @GetMapping("/boards/likes")
     public ResponseEntity<CommonResponse<Page<BoardResponseDto>>> getAllLikeBoard(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestParam(defaultValue = "1") int page

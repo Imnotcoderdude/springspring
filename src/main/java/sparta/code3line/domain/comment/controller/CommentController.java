@@ -1,11 +1,13 @@
 package sparta.code3line.domain.comment.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sparta.code3line.common.CommonResponse;
+import sparta.code3line.domain.board.dto.BoardResponseDto;
 import sparta.code3line.domain.comment.dto.CommentRequestDto;
 import sparta.code3line.domain.comment.dto.CommentResponseDto;
 import sparta.code3line.domain.comment.service.CommentService;
@@ -15,12 +17,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/{boardId}")
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/comment")
+    @PostMapping("/{boardId}/comment")
     public ResponseEntity<CommonResponse<CommentResponseDto>> createComment(@PathVariable Long boardId,
                                                                             @AuthenticationPrincipal UserPrincipal principal,
                                                                             @RequestBody CommentRequestDto requestDto) {
@@ -35,7 +36,7 @@ public class CommentController {
 
     }
 
-    @GetMapping("/comments")
+    @GetMapping("/{boardId}/comments")
     public ResponseEntity<CommonResponse<List<CommentResponseDto>>> readComments(@PathVariable Long boardId) {
 
         CommonResponse<List<CommentResponseDto>> response = new CommonResponse<>(
@@ -48,7 +49,8 @@ public class CommentController {
 
     }
 
-    @GetMapping("/comments/{commentId}")
+    // 조회 : 댓글 단건 조회 + 좋아요 수 출력
+    @GetMapping("/{boardId}/comments/{commentId}")
     public ResponseEntity<CommonResponse<CommentResponseDto>> getOneComment(
             @PathVariable Long boardId,
             @PathVariable Long commentId
@@ -64,7 +66,29 @@ public class CommentController {
 
     }
 
-    @PutMapping("/comment/{commentId}")
+    // 조회 : 사용자가 좋아요한 댓글 전체조회
+    @GetMapping("/comments/likes")
+    public ResponseEntity<CommonResponse<Page<CommentResponseDto>>> getAllLikeComment(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam(defaultValue = "1") int page
+    ) {
+
+        int sizeFixed = 5;
+        Page<CommentResponseDto> responseDto = commentService.getAllLikeBoard(
+                page - 1,
+                sizeFixed,
+                userPrincipal);
+        CommonResponse<Page<CommentResponseDto>> commonResponse = new CommonResponse<>(
+                "좋아요한 게시글 " + page + "번 페이지 조회 완료",
+                HttpStatus.OK.value(),
+                responseDto
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
+
+    }
+
+    @PutMapping("/{boardId}/comment/{commentId}")
     public ResponseEntity<CommonResponse<CommentResponseDto>> updateComment(@PathVariable Long boardId,
                                                                             @PathVariable Long commentId,
                                                                             @AuthenticationPrincipal UserPrincipal principal,
@@ -80,7 +104,7 @@ public class CommentController {
 
     }
 
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/{boardId}/comment/{commentId}")
     public ResponseEntity<CommonResponse<Void>> deleteComment(@PathVariable Long boardId,
                                                               @PathVariable Long commentId,
                                                               @AuthenticationPrincipal UserPrincipal principal) {
@@ -94,4 +118,5 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
+
 }

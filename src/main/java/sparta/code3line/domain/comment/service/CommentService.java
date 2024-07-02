@@ -2,9 +2,12 @@ package sparta.code3line.domain.comment.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import sparta.code3line.common.CommonResponse;
 import sparta.code3line.common.exception.CustomException;
 import sparta.code3line.common.exception.ErrorCode;
+import sparta.code3line.domain.board.dto.BoardResponseDto;
 import sparta.code3line.domain.board.entity.Board;
 import sparta.code3line.domain.board.repository.BoardRepository;
 import sparta.code3line.domain.comment.dto.CommentRequestDto;
@@ -14,9 +17,11 @@ import sparta.code3line.domain.comment.repository.CommentRepository;
 import sparta.code3line.domain.like.repository.LikeBoardRepository;
 import sparta.code3line.domain.like.repository.LikeCommentRepository;
 import sparta.code3line.domain.user.entity.User;
+import sparta.code3line.security.UserPrincipal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -112,4 +117,23 @@ public class CommentService {
 
     }
 
+    // 조회 : 사용자가 좋아요한 댓글 전체 조회
+    public Page<CommentResponseDto> getAllLikeBoard(int page, int size, UserPrincipal userPrincipal) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Long userId = userPrincipal.getUser().getId();
+
+        List<Long> likeCommentIds = likeCommentRepository.findByCommentIdsByUserId(userId);
+
+        Page<Comment> likeComments = commentRepository.findByIdIn(likeCommentIds, pageable);
+
+        List<CommentResponseDto> commentResponseDtoList = likeComments.getContent().stream()
+                .map(comment -> {
+                    Long likeCount = likeCommentRepository.countByCommentId(comment.getId());
+                    return new CommentResponseDto(comment, likeCount);
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(commentResponseDtoList, pageable, likeComments.getTotalElements());
+    }
 }
