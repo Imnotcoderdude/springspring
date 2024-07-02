@@ -15,6 +15,9 @@ public class UserResponseDto {
     private String profileImg;
     private List<User> allUsers;
 
+    private Long likeBoardCount;
+    private Long likeCommentCount;
+
     public UserResponseDto(User user){
         this.username = user.getUsername();
         this.roleName = user.getRole().getRoleName();
@@ -22,6 +25,17 @@ public class UserResponseDto {
         this.email = user.getEmail();
         this.profileImg = user.getProfileImg();
         this.allUsers = null;
+    }
+
+    public UserResponseDto(User user, Long likeBoardCount, Long likeCommentCount){
+        this.username = user.getUsername();
+        this.roleName = user.getRole().getRoleName();
+        this.nickname = user.getNickname();
+        this.email = user.getEmail();
+        this.profileImg = user.getProfileImg();
+        this.allUsers = null;
+        this.likeBoardCount = likeBoardCount;
+        this.likeCommentCount = likeCommentCount;
     }
 
 }
