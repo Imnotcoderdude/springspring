@@ -1,18 +1,17 @@
 package sparta.code3line.domain.like.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import sparta.code3line.domain.like.entity.LikeBoard;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface LikeBoardRepository extends CrudRepository<LikeBoard, Long>, LikeBoardRepositoryCustom {
+public interface LikeBoardRepository extends CrudRepository<LikeBoard, Long>, LikeRepositoryCustom {
 
     Optional<LikeBoard> findByUserIdAndBoardId(Long userId, Long commentId);
 
     Long countByBoardId(Long boardId);
+
+    Long countByUserId(Long id);
 
     // 쿼리문 풀이 :
     // lb 는 LikeBoard 엔티티의 별칭 : FROM LikeBoard lb
@@ -22,7 +21,5 @@ public interface LikeBoardRepository extends CrudRepository<LikeBoard, Long>, Li
     // UserId에 해당하는 사용자가 남긴 좋아요가 달려있는 모든 게시글을 추적한다.
 //    @Query("SELECT lb.board.id FROM LikeBoard lb WHERE lb.user.id = :userId")
 //    List<Long> findByBoardIdsByUserId(@Param("userId") Long boardId);
-
-    Long countByUserId(Long id);
 
 }
