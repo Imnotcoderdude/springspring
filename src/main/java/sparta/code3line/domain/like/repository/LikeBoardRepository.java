@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import sparta.code3line.domain.like.entity.LikeBoard;
-import sparta.code3line.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Optional;

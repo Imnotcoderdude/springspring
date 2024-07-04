@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import sparta.code3line.common.exception.CustomException;
 import sparta.code3line.common.exception.ErrorCode;
-import sparta.code3line.domain.user.repository.UserRepository;
 
 import java.security.Key;
 import java.util.Date;
@@ -59,7 +58,6 @@ public class JwtService {
     }
 
     // 엑세스 토큰
-    // TODO : 유저 권한 기능 추가시 role 추가하여 권한도 토큰에 담기
     public String generateAccessToken(String username) {
 
         return createToken(username, accessExpireTime);
@@ -67,7 +65,6 @@ public class JwtService {
     }
 
     // 리프레쉬 토큰
-    // TODO : 유저 권한 기능 추가시 role 추가하여 권한도 토큰에 담기
     public String generateRefreshToken(String username) {
 
         return createToken(username, refreshExpireTime);
@@ -95,12 +92,8 @@ public class JwtService {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(okToken);
             return true;
-        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+        } catch (JwtException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-        } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
@@ -115,23 +108,11 @@ public class JwtService {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(okToken);
             return "정상 JWT token 입니다.";
-        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+        } catch (JwtException e) {
             return "Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.";
-        } catch (ExpiredJwtException e) {
-            return "Expired JWT token, 만료된 JWT token 입니다.";
-        } catch (UnsupportedJwtException e) {
-            return "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.";
         } catch (IllegalArgumentException e) {
             return "JWT claims is empty, 잘못된 JWT 토큰 입니다.";
         }
-
-    }
-
-    // 토큰 만료 확인
-    // TODO : 없어도 됨
-    public Boolean isTokenExpired(String token) {
-
-        return extractExpiration(token).before(new Date());
 
     }
 
