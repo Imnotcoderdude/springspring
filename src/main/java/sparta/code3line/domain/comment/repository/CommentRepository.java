@@ -16,4 +16,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Page<Comment> findByIdIn(List<Long> likeCommentIds, Pageable pageable);
 
+    Long countByBoardId(Long id);
 }

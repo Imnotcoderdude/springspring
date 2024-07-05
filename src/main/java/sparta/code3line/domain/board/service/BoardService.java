@@ -15,6 +15,7 @@ import sparta.code3line.domain.board.entity.Board;
 import sparta.code3line.domain.board.entity.BoardFiles;
 import sparta.code3line.domain.board.repository.BoardFilesRepository;
 import sparta.code3line.domain.board.repository.BoardRepository;
+import sparta.code3line.domain.comment.repository.CommentRepository;
 import sparta.code3line.domain.file.FileService;
 import sparta.code3line.domain.follow.entity.Follow;
 import sparta.code3line.domain.follow.repository.FollowRepository;
@@ -38,6 +39,7 @@ public class BoardService {
     private final FileService fileService;
     private final BoardFilesRepository boardFilesRepository;
     private final LikeBoardRepository likeBoardRepository;
+    private final CommentRepository commentRepository;
 
     // USER에 해당하는 게시글 찾아오기
     public Board getBoard(User user, Long boardId) {
@@ -176,7 +178,8 @@ public class BoardService {
                 -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         Long boardLikeCount = likeBoardRepository.countByBoardId(board.getId());
-        return new BoardResponseDto(board, boardLikeCount);
+        Long commentCount = commentRepository.countByBoardId(board.getId());
+        return new BoardResponseDto(board, boardLikeCount, commentCount);
 
     }
 
@@ -193,7 +196,8 @@ public class BoardService {
         List<BoardResponseDto> boardResponseDtoList = likeBoards.getContent().stream()
                 .map(board -> {
                     Long likeCount = likeBoardRepository.countByBoardId(board.getId());
-                    return new BoardResponseDto(board, likeCount);
+                    Long commentCount = commentRepository.countByBoardId(board.getId());
+                    return new BoardResponseDto(board, likeCount, commentCount);
                 })
                 .collect(Collectors.toList());
 
